@@ -165,7 +165,6 @@ class Base extends ModelBase implements BaseInterface
             if (count($sqlData) > 1) {
                 @array_unshift($sql_data, $sql_type);
                 @call_user_func_array([$stmt, 'bind_param'], $sql_data);
-                @mysqli_stmt_bind_param($stmt, $sql_type, $sql_data);
             } else {
                 @mysqli_stmt_bind_param($stmt, $sql_type, $sql_data[0]);
             }
@@ -184,41 +183,22 @@ class Base extends ModelBase implements BaseInterface
                     $dbRows['result']['total'] = 0;
 
                     if (!is_null($sqlData)) {
-
                         @mysqli_stmt_execute($stmt);
-                        $result = @mysqli_stmt_result_metadata($stmt);
-                        $params[] = &$stmt;
-                        while ($field = @mysqli_fetch_field($result)) {
-                            $params[] = &$data[$field->name];
-                        }
-
-                        @call_user_func_array([$stmt, 'bind_result'], $data);
-                        while (@mysqli_stmt_fetch($stmt)) {
-                            foreach ($data as $key => $value) {
-                                $res[$key] = $value;
-                            }
-                            if (is_null($keyName)) {
-                                $dbRows['result']['data'][$dbRows['result']['total']] = $res;
-                                $dbRows['result']['total']++;
-                            } else {
-                                $dbRows['result']['data'][$res[$keyName]] = $res;
-                                $dbRows['result']['total']++;
-                            }
-                        }
-
+                        $result = @mysqli_stmt_get_result($stmt);
                     } else {
-                        $res = mysqli_query($conn, $sqlCommand);
-                        if (is_null($keyName)) {
-                            while ($row = @mysqli_fetch_array($res, MYSQLI_ASSOC)) {
-                                $dbRows['result']['data'][$dbRows['result']['total']] = $row;
-                                $dbRows['result']['total']++;
-                            }
-                        } else {
-                            $keyName = strtoupper($keyName);
-                            while ($row = @mysqli_fetch_array($res, MYSQLI_ASSOC)) {
-                                $dbRows['result']['data'][$row[$keyName]] = $row;
-                                $dbRows['result']['total']++;
-                            }
+                        $result = mysqli_query($conn, $sqlCommand);
+                    }
+
+                    if (is_null($keyName)) {
+                        while ($row = @mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+                            $dbRows['result']['data'][$dbRows['result']['total']] = $row;
+                            $dbRows['result']['total']++;
+                        }
+                    } else {
+                        $keyName = strtoupper($keyName);
+                        while ($row = @mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+                            $dbRows['result']['data'][$row[$keyName]] = $row;
+                            $dbRows['result']['total']++;
                         }
                     }
                     break;
