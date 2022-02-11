@@ -281,7 +281,8 @@ class WebRestful
      */
     protected function checkMethodCanExecute(string $class, string $method)
     {
-        return is_callable(array($class, $method)) ? null : die("【ERROR】Method \"$method\" Access modifiers is not available. Please check the Access modifiers in the following file： $this->absoluteFile");
+        $class = new $class();
+        return is_callable([$class, $method]) ? null : die("【ERROR】Method \"$method\" Access modifiers is not available. Please check the Access modifiers in the following file： $this->absoluteFile");
     }
 
     /**
