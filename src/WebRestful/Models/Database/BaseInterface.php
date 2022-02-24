@@ -49,13 +49,6 @@ interface BaseInterface
     public function allTabColumns(string $serverName, string $serachName);
 
     /**
-     * Create uuid.
-     *
-     * @return int
-     */
-    public static function uuid();
-
-    /**
      * Query.
      *
      * @param string $modelType

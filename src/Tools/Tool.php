@@ -50,4 +50,15 @@ trait Tool
             str_pad(base_convert($a['node_part'], 2, 16), 12, "0", STR_PAD_LEFT));
     }
 
+
+    /**
+     * Sql id for PK
+     *
+     * @return string
+     */
+    public static function sqlId(): string
+    {
+        return date('U') . substr(microtime(FALSE), 2, 6);
+    }
+
 }

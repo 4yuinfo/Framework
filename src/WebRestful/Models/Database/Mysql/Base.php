@@ -15,6 +15,8 @@ use function Couchbase\passthruEncoder;
 class Base extends ModelBase implements BaseInterface
 {
 
+    use \Ntch\Framework\Tools\Tool;
+
     /**
      * @inheritDoc
      */
@@ -107,14 +109,6 @@ class Base extends ModelBase implements BaseInterface
             SELECT TABLE_NAME, COLUMN_NAME, ORDINAL_POSITION, COLUMN_DEFAULT, IS_NULLABLE, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, COLUMN_TYPE, COLUMN_KEY, COLUMN_COMMENT FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '$serachName' ORDER BY ORDINAL_POSITION
         sqlCommand;
         return self::query('server', $serverName, null, $sql, null, null, 0, -1);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public static function uuid()
-    {
-        return date('U') . substr(microtime(FALSE), 2, 6);
     }
 
     /**
@@ -238,7 +232,7 @@ class Base extends ModelBase implements BaseInterface
                 switch ($value['SYSTEM_SET']) {
                     case 'PRIMARY_KEY':
                         if ($action == 'INSERT') {
-                            $data[$key] = self::uuid();
+                            $data[$key] = self::sqlId();
                         }
                         break;
                     case 'UPDATE_DATE':

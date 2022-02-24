@@ -14,6 +14,8 @@ use Ntch\Framework\WebRestful\Models\Base as ModelBase;
 class Base extends ModelBase implements BaseInterface
 {
 
+    use \Ntch\Framework\Tools\Tool;
+
     /**
      * @inheritDoc
      */
@@ -136,14 +138,6 @@ class Base extends ModelBase implements BaseInterface
     /**
      * @inheritDoc
      */
-    public static function uuid()
-    {
-        return date('U') . substr(microtime(FALSE), 2, 6);
-    }
-
-    /**
-     * @inheritDoc
-     */
     public static function query(string $modelType, string $modelName, ?string $tableName, string $sqlCommand, ?array $sqlData, ?string $keyName, int $offset, int $limit)
     {
         // config
@@ -235,7 +229,7 @@ class Base extends ModelBase implements BaseInterface
                 switch ($value['SYSTEM_SET']) {
                     case 'PRIMARY_KEY':
                         if ($action == 'INSERT') {
-                            $data[$key] = self::uuid();
+                            $data[$key] = self::sqlId();
                         }
                         break;
                     case 'UPDATE_DATE':
