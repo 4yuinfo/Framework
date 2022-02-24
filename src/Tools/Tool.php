@@ -1,9 +1,9 @@
 <?php
 
+namespace Ntch\Framework\Tools;
 
 trait Tool
 {
-    
 
     /**
      * Another (ugly) "random or pseudo-random" version of RFC 4122
